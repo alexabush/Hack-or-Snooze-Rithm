@@ -75,16 +75,7 @@ $(function() {
   }
 
   getStories().then(function(stories) {
-    // debugger;
     const data = stories.data;
-    // const uniqueStories = [];
-
-    // data.forEach(obj => {
-    //   // if ()
-    // });
-    // stories.keys().forEach(key => {
-    //   if (unique)
-    // })
 
     data.slice(34).forEach(function(story) {
       appendArticle(story.title, story.url);
