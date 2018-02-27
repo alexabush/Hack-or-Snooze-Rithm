@@ -137,7 +137,7 @@ $(function() {
   }
 
   getStory().then(function(data) {
-    console.log(data);
+    console.log("This is getStory" + data);
   });
 
   /*
@@ -159,3 +159,29 @@ Sign Up User
     }).then(login(username, password));
   }
 });
+// Elie's code
+// function loginUser(username, password) {
+//   return $.ajax({
+//     url: "https://hackorsnoozeapi.herokuapp.com/auth",
+//     data: {
+//       data: {
+//         username,
+//         password
+//       }
+//     }
+//   });
+// }
+
+// function getUser(username) {
+//   let token = localStorage.getItem("token");
+//   return $.ajax({
+//     url: "https://hackorsnoozeapi.herokuapp.com/users/" + username,
+//     headers: {
+//       Authorization: `Bearer ${token}`
+//     }
+//   });
+// }
+
+// loginUser().then(function(token) {
+//   getUser().then(function() {});
+// });
