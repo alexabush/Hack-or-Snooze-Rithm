@@ -77,6 +77,7 @@ $(function() {
   getStories().then(function(stories) {
     const data = stories.data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     // const uniqueStories = [];
 
@@ -88,6 +89,9 @@ $(function() {
     // })
 
 >>>>>>> 561adeeee12eff181d75c4fcd3468a4ff1525c99
+=======
+
+>>>>>>> 84387cdd1a0ca2078e67d8a25ca3b164cc1405fa
     data.slice(34).forEach(function(story) {
       appendArticle(story.title, story.url);
     });
