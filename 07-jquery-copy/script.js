@@ -95,7 +95,7 @@ $(function() {
   // */
 
   function login(username, password) {
-    $.ajax({
+    return $.ajax({
       method: "POST",
       url: "https://hack-or-snooze.herokuapp.com/auth",
       data: {
@@ -104,17 +104,31 @@ $(function() {
           password: password
         }
       }
-    }).then(function(data) {
-      saveToken(data, username);
-    });
+    })
+      .then(saveToken)
+      .then(getUser(username))
+      .then(function(data) {
+        console.log(data);
+      });
     $("#welcome-text").text(`Welcome ${username}`);
   }
 
-  // function saveToken(data) {
-  //   localStorage.setItem("token", data.data.token);
-  // }
-  function saveToken(data, uniqueKey) {
-    debugger;
+  function getUser(username) {
+    let token = localStorage.getItem("token");
+    return $.ajax({
+      url: "https://hackorsnoozeapi.herokuapp.com/users/" + username,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  // loginUser().then(function(token) {
+  //   getUser().then(function() {});
+  // });
+
+  function saveToken(data) {
+    localStorage.setItem("token", data.data.token);
   }
 
   function getStory() {
