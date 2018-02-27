@@ -5,12 +5,10 @@ $(function() {
   });
 
   $('#nav__signin').on('click', function() {
-    console.log('singin');
     $('#form__signin').slideDown(1000);
   });
 
   $('#nav__signup').on('click', function() {
-    console.log('singup');
     $('#form__signup').slideDown(1000);
   });
 
@@ -70,7 +68,6 @@ $(function() {
 
   $('ol').on('click', '.fa-star', function(event) {
     $(event.target).toggleClass('far fa-star fas fa-star');
-
     $(event.target)
       .closest('li')
       .toggleClass('favorite');
