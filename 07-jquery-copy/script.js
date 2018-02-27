@@ -1,27 +1,27 @@
-$('form').hide();
+$("form").show();
 $(function() {
-  $('#submit-nav').on('click', function() {
+  $("#submit-nav").on("click", function() {
     $($form).slideDown(1000);
   });
 
-  $('#fav-nav').on('click', function() {
+  $("#fav-nav").on("click", function() {
     //debugger;
     event.preventDefault();
     var $favNavTitle = $(this);
-    if ($favNavTitle.text() == $favNavTitle.data('text-swap')) {
-      $favNavTitle.text($favNavTitle.data('text-original'));
+    if ($favNavTitle.text() == $favNavTitle.data("text-swap")) {
+      $favNavTitle.text($favNavTitle.data("text-original"));
     } else {
-      $favNavTitle.data('text-original', $favNavTitle.text());
-      $favNavTitle.text($favNavTitle.data('text-swap'));
+      $favNavTitle.data("text-original", $favNavTitle.text());
+      $favNavTitle.text($favNavTitle.data("text-swap"));
     }
-    $('li:not(.favorite)').toggleClass('dont-display');
+    $("li:not(.favorite)").toggleClass("dont-display");
   });
 
-  var $form = $('form');
-  $($form).on('submit', function() {
+  var $form = $("form");
+  $($form).on("submit", function() {
     event.preventDefault();
-    var $titleVal = $('#title').val();
-    var $url = $('#url').val();
+    var $titleVal = $("#title").val();
+    var $url = $("#url").val();
     appendArticle($titleVal, $url);
     // var $urlSplit = $url.split('/');
     // var $hostUrl = $urlSplit[2];
@@ -32,27 +32,27 @@ $(function() {
     //   </span>
     //   ${$titleVal} <span><a href="${$url}" target="_blank" class="text-muted">&nbsp;(${$hostUrl})</a>
     // `
-    $form.trigger('reset');
+    $form.trigger("reset");
     $form.slideUp(1000);
   });
 
   function appendArticle(title, url) {
-    var $newArticle = $('<li>', {
+    var $newArticle = $("<li>", {
       html: `
       <span><i class="far fa-star fa-sm" style="color:lightgrey"></i>
       </span>
       ${title} <span><a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
     `
     });
-    $('ol').append($newArticle);
+    $("ol").append($newArticle);
   }
 
-  $('ol').on('click', '.fa-star', function(event) {
-    $(event.target).toggleClass('far fa-star fas fa-star');
+  $("ol").on("click", ".fa-star", function(event) {
+    $(event.target).toggleClass("far fa-star fas fa-star");
 
     $(event.target)
-      .closest('li')
-      .toggleClass('favorite');
+      .closest("li")
+      .toggleClass("favorite");
   });
 
   /* AJAX FUNNY BUSINESSS */
@@ -71,11 +71,12 @@ $(function() {
   // }
 
   function getStories() {
-    return $.getJSON('https://hack-or-snooze.herokuapp.com/stories');
+    return $.getJSON("https://hack-or-snooze.herokuapp.com/stories");
   }
 
   getStories().then(function(stories) {
     const data = stories.data;
+
     data.slice(34).forEach(function(story) {
       appendArticle(story.title, story.url);
     });
