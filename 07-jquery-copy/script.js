@@ -1,18 +1,18 @@
-// $('form').show();
 $('form').hide();
 $(function() {
   $('#submit-nav').on('click', function() {
-    // $($form).slideDown(1000);
     $('#form__submit').slideDown(1000);
   });
 
   $('#nav__signin').on('click', function() {
-    // $($form).slideDown(1000);
     $('#form__signin').slideDown(1000);
   });
 
+  $('#nav__signup').on('click', function() {
+    $('#form__signup').slideDown(1000);
+  });
+
   $('#fav-nav').on('click', function() {
-    //debugger;
     event.preventDefault();
     var $favNavTitle = $(this);
     if ($favNavTitle.text() == $favNavTitle.data('text-swap')) {
@@ -30,15 +30,6 @@ $(function() {
     var $titleVal = $('#title').val();
     var $url = $('#url').val();
     appendArticle($titleVal, $url);
-    // var $urlSplit = $url.split('/');
-    // var $hostUrl = $urlSplit[2];
-
-    // var $newArticle = $('<li>', {
-    //   html: `
-    //   <span><i class="far fa-star fa-sm" style="color:lightgrey"></i>
-    //   </span>
-    //   ${$titleVal} <span><a href="${$url}" target="_blank" class="text-muted">&nbsp;(${$hostUrl})</a>
-    // `
     $formSub.trigger('reset');
     $formSub.slideUp(1000);
   });
@@ -143,6 +134,6 @@ function getStory() {
   });
 }
 
-getStory().then(function(data) {
-  console.log(data);
-});
+// getStory().then(function(data) {
+//   console.log(data);
+// });

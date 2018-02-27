@@ -23,9 +23,9 @@
           <div class="navbar-nav menu-links">
             <a class="nav-item nav-link active py-0 menu-link" id="submit-nav" href="#">Submit</a>
             <a class="nav-item nav-link active py-0 menu-link" id="fav-nav" data-text-swap="All" href="#">Favorites</a>
-
             <!-- <div class="navbar-nav menu-links"> -->
             <a class="nav-item nav-link active py-0 menu-link" id="nav__signin" href="#">Sign in</a>
+            <a class="nav-item nav-link active py-0 menu-link" id="nav__signup" href="#">Sign Up</a>
 
           </div>
 
@@ -53,14 +53,45 @@
         </div>
       </form>
 
-      <!-- second form -->
+      <!-- signin form -->
       <form id='form__signin' class="col-6 mx-auto">
+        <!-- username -->
         <div class="form-group row">
           <label for="username" class="col-sm-2 col-form-label">Username</label>
           <div class="col-sm-10">
             <input type="text" class="form-control col-sm-7" id="username" placeholder="Username" required>
           </div>
         </div>
+        <!-- password -->
+        <div class="form-group row">
+          <label for="Password" class="col-sm-2 col-form-label">Password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control col-sm-7" id="password" placeholder="Password" required>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="signInBtn" class="col-sm-1 col-form-label mr-2">&nbsp;</label>
+          <button id='signInBtn' type="submit" class="btn btn-secondary btn-md ml-4">Submit</button>
+        </div>
+      </form>
+
+      <!-- sign up form -->
+      <form id='form__signup' class="col-6 mx-auto">
+        <!-- name -->
+        <div class="form-group row">
+          <label for="name" class="col-sm-2 col-form-label">Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control col-sm-7" id="name" placeholder="Name" required>
+          </div>
+        </div>
+        <!-- username -->
+        <div class="form-group row">
+          <label for="username" class="col-sm-2 col-form-label">Username</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control col-sm-7" id="username" placeholder="Username" required>
+          </div>
+        </div>
+        <!-- password -->
         <div class="form-group row">
           <label for="Password" class="col-sm-2 col-form-label">Password</label>
           <div class="col-sm-10">
@@ -69,10 +100,9 @@
         </div>
 
         <div class="form-group row">
-          <label for="signInBtn" class="col-sm-1 col-form-label mr-2">&nbsp;</label>
-          <button id='signInBtn' type="submit" class="btn btn-secondary btn-md ml-4">Submit</button>
+          <label for="signupBtn" class="col-sm-1 col-form-label mr-2">&nbsp;</label>
+          <button id='signupBtn' type="submit" class="btn btn-secondary btn-md ml-4">Submit</button>
         </div>
-
       </form>
     </section>
 
