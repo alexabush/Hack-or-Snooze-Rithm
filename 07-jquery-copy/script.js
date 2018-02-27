@@ -1,6 +1,9 @@
 $('form').hide();
 $(function() {
   $('#submit-nav').on('click', function() {
+    if (localStorage.getItem('token') === null) {
+      console.log('nope');
+    } else console.log('yes');
     $('#form__submit').slideDown(1000);
   });
 
@@ -10,6 +13,10 @@ $(function() {
 
   $('#nav__signup').on('click', function() {
     $('#form__signup').slideDown(1000);
+  });
+
+  $('#nav__logout').on('click', function() {
+    logOutUser();
   });
 
   $('#fav-nav').on('click', function() {
@@ -171,3 +178,11 @@ function addStory(username, title, author, url) {
 //     }
 //   });
 // }
+
+/* 
+LOG OUT
+*/
+
+function logOutUser() {
+  localStorage.clear();
+}
