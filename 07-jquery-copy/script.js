@@ -1,85 +1,85 @@
-$('form').hide();
+$("form").hide();
 $(function() {
-  $('#submit-nav').on('click', function() {
-    $('#form__submit').slideDown(1000);
+  $("#submit-nav").on("click", function() {
+    $("#form__submit").slideDown(1000);
   });
 
-  $('#nav__signin').on('click', function() {
-    console.log('singin');
-    $('#form__signin').slideDown(1000);
+  $("#nav__signin").on("click", function() {
+    console.log("singin");
+    $("#form__signin").slideDown(1000);
   });
 
-  $('#nav__signup').on('click', function() {
-    console.log('singup');
-    $('#form__signup').slideDown(1000);
+  $("#nav__signup").on("click", function() {
+    console.log("singup");
+    $("#form__signup").slideDown(1000);
   });
 
-  $('#fav-nav').on('click', function() {
+  $("#fav-nav").on("click", function() {
     event.preventDefault();
     var $favNavTitle = $(this);
-    if ($favNavTitle.text() == $favNavTitle.data('text-swap')) {
-      $favNavTitle.text($favNavTitle.data('text-original'));
+    if ($favNavTitle.text() == $favNavTitle.data("text-swap")) {
+      $favNavTitle.text($favNavTitle.data("text-original"));
     } else {
-      $favNavTitle.data('text-original', $favNavTitle.text());
-      $favNavTitle.text($favNavTitle.data('text-swap'));
+      $favNavTitle.data("text-original", $favNavTitle.text());
+      $favNavTitle.text($favNavTitle.data("text-swap"));
     }
-    $('li:not(.favorite)').toggleClass('dont-display');
+    $("li:not(.favorite)").toggleClass("dont-display");
   });
 
-  var $formSub = $('#form__submit');
-  $($formSub).on('submit', function() {
+  var $formSub = $("#form__submit");
+  $($formSub).on("submit", function() {
     event.preventDefault();
-    var $titleVal = $('#title').val();
-    var $url = $('#url').val();
+    var $titleVal = $("#title").val();
+    var $url = $("#url").val();
     appendArticle($titleVal, $url);
-    $formSub.trigger('reset');
+    $formSub.trigger("reset");
     $formSub.slideUp(1000);
   });
 
-  var $formSignin = $('#form__signin');
-  $($formSignin).on('submit', function() {
+  var $formSignin = $("#form__signin");
+  $($formSignin).on("submit", function() {
     event.preventDefault();
-    var $username = $('#username').val();
-    var $password = $('#password').val();
+    var $username = $("#username").val();
+    var $password = $("#password").val();
     login($username, $password);
-    $formSignin.trigger('reset');
+    $formSignin.trigger("reset");
     $formSignin.slideUp(1000);
   });
 
-  var $formSignUp = $('#form__signup');
-  $($formSignUp).on('submit', function() {
+  var $formSignUp = $("#form__signup");
+  $($formSignUp).on("submit", function() {
     event.preventDefault();
-    var $name = $('#name__signup').val();
-    var $username = $('#username__signup').val();
-    var $password = $('#password__signup').val();
+    var $name = $("#name__signup").val();
+    var $username = $("#username__signup").val();
+    var $password = $("#password__signup").val();
     signUpUser($name, $username, $password);
-    $formSignUp.trigger('reset');
+    $formSignUp.trigger("reset");
     $formSignUp.slideUp(1000);
   });
 
   function appendArticle(title, url) {
-    var $newArticle = $('<li>', {
+    var $newArticle = $("<li>", {
       html: `
       <span><i class="far fa-star fa-sm" style="color:lightgrey"></i>
       </span>
       ${title} <span><a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
     `
     });
-    $('ol').append($newArticle);
+    $("ol").append($newArticle);
   }
 
-  $('ol').on('click', '.fa-star', function(event) {
-    $(event.target).toggleClass('far fa-star fas fa-star');
+  $("ol").on("click", ".fa-star", function(event) {
+    $(event.target).toggleClass("far fa-star fas fa-star");
 
     $(event.target)
-      .closest('li')
-      .toggleClass('favorite');
+      .closest("li")
+      .toggleClass("favorite");
   });
 
   /* AJAX FUNNY BUSINESSS */
   /*##################################*/
   function getStories() {
-    return $.getJSON('https://hack-or-snooze.herokuapp.com/stories');
+    return $.getJSON("https://hack-or-snooze.herokuapp.com/stories");
   }
 
   getStories().then(function(stories) {
@@ -96,36 +96,41 @@ $(function() {
 
   function login(username, password) {
     $.ajax({
-      method: 'POST',
-      url: 'https://hack-or-snooze.herokuapp.com/auth',
+      method: "POST",
+      url: "https://hack-or-snooze.herokuapp.com/auth",
       data: {
         data: {
           username: username,
           password: password
         }
       }
-    }).then(saveToken);
-    // $('#welcome-text').text('ab');
+    }).then(function(data) {
+      saveToken(data, username);
+    });
+    $("#welcome-text").text(`Welcome ${username}`);
   }
 
-  function saveToken(data) {
-    localStorage.setItem('token', data.data.token);
+  // function saveToken(data) {
+  //   localStorage.setItem("token", data.data.token);
+  // }
+  function saveToken(data, uniqueKey) {
+    debugger;
   }
 
   function getStory() {
-    var token = localStorage.getItem('token');
+    var token = localStorage.getItem("token");
     return $.ajax({
-      method: 'POST',
-      url: 'https://hack-or-snooze.herokuapp.com/stories',
+      method: "POST",
+      url: "https://hack-or-snooze.herokuapp.com/stories",
       headers: {
         Authorization: `Bearer ${token}`
       },
       data: {
         data: {
-          title: 'myTitle',
-          author: 'Test',
-          username: 'testingagain',
-          url: 'https://www.myRandomUrl.com'
+          title: "myTitle",
+          author: "Test",
+          username: "testingagain",
+          url: "https://www.myRandomUrl.com"
         }
       }
     });
@@ -142,8 +147,8 @@ Sign Up User
   function signUpUser(name, username, password) {
     debugger;
     $.ajax({
-      method: 'POST',
-      url: 'https://hack-or-snooze.herokuapp.com/users',
+      method: "POST",
+      url: "https://hack-or-snooze.herokuapp.com/users",
       data: {
         data: {
           name: name,
