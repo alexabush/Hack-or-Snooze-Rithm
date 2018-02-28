@@ -44,9 +44,10 @@ $(function() {
     event.preventDefault();
     var $username = $('#username').val();
     var $password = $('#password').val();
-    login($username, $password);
-    $formSignin.trigger('reset');
-    $formSignin.slideUp(1000);
+    login($username, $password).then(function(data) {
+      $formSignin.trigger('reset');
+      $formSignin.slideUp(1000);
+    });
   });
 
   var $formSignUp = $('#form__signup');
@@ -55,9 +56,10 @@ $(function() {
     var $name = $('#name__signup').val();
     var $username = $('#username__signup').val();
     var $password = $('#password__signup').val();
-    signUpUser($name, $username, $password);
-    $formSignUp.trigger('reset');
-    $formSignUp.slideUp(1000);
+    signUpUser($name, $username, $password).then(function(data) {
+      $formSignUp.trigger('reset');
+      $formSignUp.slideUp(1000);
+    });
   });
 
   function appendArticle(title, url) {
@@ -78,13 +80,14 @@ $(function() {
       .toggleClass('favorite');
   });
 
-  /* AJAX FUNNY BUSINESSS */
+  /* AJAX BUSINESSS */
   /*##################################*/
   (function mainExecution() {
     getStories().then(function(stories) {
       const data = stories.data;
       data.slice(34).forEach(function(story) {
         appendArticle(story.title, story.url);
+        //can be updated to get more info
       });
     });
   })();
@@ -96,42 +99,76 @@ $(function() {
 
   /*CREATE NEW USER ACCOUNT*/
   function signUpUser(name, username, password) {
-    $.ajax({
+    debugger;
+    return $.ajax({
       method: 'POST',
       url: 'https://hack-or-snooze.herokuapp.com/users',
       data: {
         data: {
-          name: name,
-          username: username,
-          password: password
+          name,
+          username,
+          password
         }
       }
-    }).then(login(username, password));
+    })
+      .then(function(res) {
+        return login(username, password);
+      })
+      .then(function(res) {
+        localStorage.setItem('token', res.data.token);
+        debugger;
+        return getUserInfo(username);
+      });
+    // .then(setWelcomeText(username));
   }
 });
 
 /*LOGIN EXISTING USER*/
 function login(username, password) {
-  $.ajax({
+  debugger;
+  return $.ajax({
     method: 'POST',
     url: 'https://hack-or-snooze.herokuapp.com/auth',
     data: {
       data: {
-        username: username,
-        password: password
+        username,
+        password
       }
     }
-  }).then(saveToken);
+  });
+}
+
+/*Set Welcome Text*/
+function setWelcomeText(username) {
+  debugger;
+
   $('#welcome-text').text(`Welcome ${username}`);
 }
 
 /*SAVE TOKEN TO LOCAL STORAGE*/
-function saveToken(res) {
-  localStorage.setItem('token', res.data.token);
+//commented out because it doesn't return a promise,
+//which causes problems when I want to change .then()'s
+// function saveToken(res) {
+//   localStorage.setItem('token', res.data.token);
+// }
+
+/*Get User Document*/
+function getUserInfo(username) {
+  debugger;
+  var token = localStorage.getItem('token');
+  return $.ajax({
+    method: 'GET',
+    url: `https://hack-or-snooze.herokuapp.com/users/${username}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 }
 
 /*ADD STORY TO LOGGED IN USER*/
 function addStory(username, title, author, url) {
+  debugger;
+
   $.ajax({
     method: 'POST',
     url: 'https://hack-or-snooze.herokuapp.com/stories',
