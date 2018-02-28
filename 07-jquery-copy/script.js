@@ -34,9 +34,12 @@ $(function() {
     event.preventDefault();
     var $titleVal = $('#title').val();
     var $url = $('#url').val();
-    appendArticle($titleVal, $url);
-    $formSub.trigger('reset');
-    $formSub.slideUp(1000);
+    // appendArticle($titleVal, $url);
+    addStory($titleVal $url).then(function(res) {
+        // return addStory(username, title, author, url);
+        $formSub.trigger('reset');
+        $formSub.slideUp(1000);
+    })
   });
 
   var $formSignin = $('#form__signin');
@@ -118,8 +121,14 @@ $(function() {
         localStorage.setItem('token', res.data.token);
         debugger;
         return getUserInfo(username);
+      })
+      .then(function(res) {
+        return getUserList();
+      })
+      .then(function(res) {
+        debugger;
+        console.log(res);
       });
-    // .then(setWelcomeText(username));
   }
 });
 
@@ -140,19 +149,10 @@ function login(username, password) {
 
 /*Set Welcome Text*/
 function setWelcomeText(username) {
-  debugger;
-
   $('#welcome-text').text(`Welcome ${username}`);
 }
 
-/*SAVE TOKEN TO LOCAL STORAGE*/
-//commented out because it doesn't return a promise,
-//which causes problems when I want to change .then()'s
-// function saveToken(res) {
-//   localStorage.setItem('token', res.data.token);
-// }
-
-/*Get User Document*/
+/*Get Individual User Document*/
 function getUserInfo(username) {
   debugger;
   var token = localStorage.getItem('token');
@@ -168,10 +168,13 @@ function getUserInfo(username) {
 /*ADD STORY TO LOGGED IN USER*/
 function addStory(username, title, author, url) {
   debugger;
-
+  let token = localStorage.getItem('token');
   $.ajax({
     method: 'POST',
     url: 'https://hack-or-snooze.herokuapp.com/stories',
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
     data: {
       data: {
         username,
@@ -179,6 +182,17 @@ function addStory(username, title, author, url) {
         author,
         url
       }
+    }
+  });
+}
+
+function getUserList() {
+  debugger;
+  let token = localStorage.getItem('token');
+  return $.ajax({
+    url: 'https://hack-or-snooze.herokuapp.com/users',
+    headers: {
+      Authorization: `Bearer ${token}`
     }
   });
 }
