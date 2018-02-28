@@ -26,6 +26,8 @@
             <!-- <div class="navbar-nav menu-links"> -->
             <a class="nav-item nav-link active py-0 menu-link" id="nav__signin" href="#">Sign in</a>
             <a class="nav-item nav-link active py-0 menu-link" id="nav__signup" href="#">Sign Up</a>
+            <a class="nav-item nav-link active py-0 menu-link" id="nav__logout" href="#">Log Out</a>
+
             <span id='welcome-text'></span>
           </div>
 
@@ -34,11 +36,17 @@
     </div>
     <!-- form -->
     <section class="row">
-      <form id=' form__submit ' class="col-6 mx-auto">
+      <form id='form__submit' class="col-6 mx-auto">
         <div class="form-group row">
           <label for="title" class="col-sm-1 col-form-label">Title</label>
           <div class="col-sm-10">
             <input type="text" class="form-control col-sm-7" id="title" placeholder="Type Your Title Here" required>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="author" class="col-sm-1 col-form-label">Author</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control col-sm-7" id="author" placeholder="Type Author Here" required>
           </div>
         </div>
         <div class="form-group row">
