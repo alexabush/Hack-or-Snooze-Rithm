@@ -76,10 +76,16 @@ $(function() {
   }
 
   $('ol').on('click', '.fa-star', function(event) {
+    var storyId;
     $(event.target).toggleClass('far fa-star fas fa-star');
     $(event.target)
       .closest('li')
       .toggleClass('favorite');
+
+    /*NEED TO GET STORY ID
+      TO DO THIS, I NEED TO APPEND THE STORY ID THE THE STORY IN THE DOM WHEN A NEW STORY IS CREATED
+      */
+    addFavoriteStory(getUsername());
   });
 
   /* AJAX BUSINESSS */
@@ -201,6 +207,16 @@ function getUsername() {
   return JSON.parse(atob(token.split('.')[1])).username;
 }
 
+function addFavoriteStory(username, storyId) {
+  let token = localStorage.getItem('token');
+  return $.ajax({
+    method: 'POST',
+    url: `https://hack-or-snooze.herokuapp.com/users/${username}/favorites/${storyId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
 // function getUser(username) {
 //   let token = localStorage.getItem('token');
 //   return $.ajax({
