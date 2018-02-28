@@ -16,6 +16,8 @@ $(function() {
   $('#nav__logout').on('click', function() {
     logOutUser();
     setWelcomeText();
+    $('#nav__signin').removeClass('dont-display');
+    $('#nav__signup').removeClass('dont-display');
   });
 
   $('#fav-nav').on('click', function() {
@@ -47,15 +49,15 @@ $(function() {
     event.preventDefault();
     var username = $('#username').val();
     var password = $('#password').val();
-    login(username, password)
-      .then(function(res) {
-        localStorage.setItem('token', res.data.token);
-      })
-      .then(function(data) {
-        $formSignUp.trigger('reset');
-        $formSignUp.slideUp(1000);
-        setWelcomeText(username);
-      });
+    login(username, password).then(function(res) {
+      localStorage.setItem('token', res.data.token);
+      $formSignin.trigger('reset');
+      $formSignin.slideUp(1000);
+      setWelcomeText(username);
+      $('#nav__signin').addClass('dont-display');
+      $('#nav__signup').addClass('dont-display');
+      $('#nav__logout').removeClass('dont-display');
+    });
   });
 
   var $formSignUp = $('#form__signup');
@@ -71,11 +73,13 @@ $(function() {
       })
       .then(function(res) {
         localStorage.setItem('token', res.data.token);
-      })
-      .then(function(data) {
         $formSignUp.trigger('reset');
+        //slide up isn't working, not sure why not
         $formSignUp.slideUp(1000);
         setWelcomeText(username);
+        $('#nav__signin').addClass('dont-display');
+        $('#nav__signup').addClass('dont-display');
+        $('#nav__logout').removeClass('dont-display');
       });
   });
 
