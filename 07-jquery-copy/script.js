@@ -64,12 +64,23 @@ $(function() {
     });
   });
 
-  function appendArticle(title, url) {
+  function appendArticle(title, url, author, username, storyId) {
     var $newArticle = $('<li>', {
       html: `
-      <span><i class="far fa-star fa-sm" style="color:lightgrey"></i>
+      <span>
+        <i class="far fa-star fa-sm" style="color:lightgrey"></i>
       </span>
-      ${title} <span><a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
+      ${title} 
+      <span>
+        <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
+      </span>
+      <p>
+        Posted By: ${username}
+        <!-- Author: ${author} -->
+      </p>
+      <span id='storyId' class='dont-display'>
+        ${storyId}
+      </span>
     `
     });
     $('ol').append($newArticle);
@@ -85,7 +96,7 @@ $(function() {
     /*NEED TO GET STORY ID
       TO DO THIS, I NEED TO APPEND THE STORY ID THE THE STORY IN THE DOM WHEN A NEW STORY IS CREATED
       */
-    addFavoriteStory(getUsername());
+    addFavoriteStory(getUsername(), storyId);
   });
 
   /* AJAX BUSINESSS */
@@ -94,7 +105,13 @@ $(function() {
     getStories().then(function(stories) {
       const data = stories.data;
       data.slice(34).forEach(function(story) {
-        appendArticle(story.title, story.url);
+        appendArticle(
+          story.title,
+          story.url,
+          story.author,
+          story.username,
+          story.storyId
+        );
         //can be updated to get more info
       });
     });
