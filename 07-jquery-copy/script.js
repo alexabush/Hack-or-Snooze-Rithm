@@ -32,14 +32,13 @@ $(function() {
   var $formSub = $('#form__submit');
   $($formSub).on('submit', function() {
     event.preventDefault();
-    var $titleVal = $('#title').val();
-    var $url = $('#url').val();
-    // appendArticle($titleVal, $url);
-    addStory($titleVal $url).then(function(res) {
-        // return addStory(username, title, author, url);
-        $formSub.trigger('reset');
-        $formSub.slideUp(1000);
-    })
+    var titleVal = $('#title').val();
+    var url = $('#url').val();
+    var author = $('#author').val();
+    addStory(getUsername(), titleVal, author, url).then(function(res) {
+      $formSub.trigger('reset');
+      $formSub.slideUp(1000);
+    });
   });
 
   var $formSignin = $('#form__signin');
@@ -102,7 +101,7 @@ $(function() {
 
   /*CREATE NEW USER ACCOUNT*/
   function signUpUser(name, username, password) {
-    debugger;
+    // debugger;
     return $.ajax({
       method: 'POST',
       url: 'https://hack-or-snooze.herokuapp.com/users',
@@ -119,14 +118,14 @@ $(function() {
       })
       .then(function(res) {
         localStorage.setItem('token', res.data.token);
-        debugger;
+        // debugger;
         return getUserInfo(username);
       })
       .then(function(res) {
         return getUserList();
       })
       .then(function(res) {
-        debugger;
+        // debugger;
         console.log(res);
       });
   }
@@ -134,7 +133,7 @@ $(function() {
 
 /*LOGIN EXISTING USER*/
 function login(username, password) {
-  debugger;
+  // debugger;
   return $.ajax({
     method: 'POST',
     url: 'https://hack-or-snooze.herokuapp.com/auth',
@@ -154,7 +153,7 @@ function setWelcomeText(username) {
 
 /*Get Individual User Document*/
 function getUserInfo(username) {
-  debugger;
+  // debugger;
   var token = localStorage.getItem('token');
   return $.ajax({
     method: 'GET',
@@ -167,9 +166,9 @@ function getUserInfo(username) {
 
 /*ADD STORY TO LOGGED IN USER*/
 function addStory(username, title, author, url) {
-  debugger;
+  // debugger;
   let token = localStorage.getItem('token');
-  $.ajax({
+  return $.ajax({
     method: 'POST',
     url: 'https://hack-or-snooze.herokuapp.com/stories',
     headers: {
@@ -187,7 +186,7 @@ function addStory(username, title, author, url) {
 }
 
 function getUserList() {
-  debugger;
+  // debugger;
   let token = localStorage.getItem('token');
   return $.ajax({
     url: 'https://hack-or-snooze.herokuapp.com/users',
@@ -195,6 +194,11 @@ function getUserList() {
       Authorization: `Bearer ${token}`
     }
   });
+}
+
+function getUsername() {
+  var token = localStorage.getItem('token');
+  return JSON.parse(atob(token.split('.')[1])).username;
 }
 
 // function getUser(username) {
