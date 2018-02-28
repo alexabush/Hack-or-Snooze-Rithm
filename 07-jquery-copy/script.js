@@ -1,9 +1,7 @@
 $('form').hide();
 $(function() {
   $('#submit-nav').on('click', function() {
-    if (localStorage.getItem('token') === null) {
-      console.log('nope');
-    } else console.log('yes');
+    if (localStorage.getItem('token') === null) return;
     $('#form__submit').slideDown(1000);
   });
 
