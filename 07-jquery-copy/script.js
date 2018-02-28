@@ -15,6 +15,7 @@ $(function() {
 
   $('#nav__logout').on('click', function() {
     logOutUser();
+    setWelcomeText();
   });
 
   $('#fav-nav').on('click', function() {
@@ -44,24 +45,38 @@ $(function() {
   var $formSignin = $('#form__signin');
   $($formSignin).on('submit', function() {
     event.preventDefault();
-    var $username = $('#username').val();
-    var $password = $('#password').val();
-    login($username, $password).then(function(data) {
-      $formSignin.trigger('reset');
-      $formSignin.slideUp(1000);
-    });
+    var username = $('#username').val();
+    var password = $('#password').val();
+    login(username, password)
+      .then(function(res) {
+        localStorage.setItem('token', res.data.token);
+      })
+      .then(function(data) {
+        $formSignUp.trigger('reset');
+        $formSignUp.slideUp(1000);
+        setWelcomeText(username);
+      });
   });
 
   var $formSignUp = $('#form__signup');
   $($formSignUp).on('submit', function() {
     event.preventDefault();
-    var $name = $('#name__signup').val();
-    var $username = $('#username__signup').val();
-    var $password = $('#password__signup').val();
-    signUpUser($name, $username, $password).then(function(data) {
-      $formSignUp.trigger('reset');
-      $formSignUp.slideUp(1000);
-    });
+    var name = $('#name__signup').val();
+    var username = $('#username__signup').val();
+    var password = $('#password__signup').val();
+    debugger;
+    signUpUser(name, username, password)
+      .then(function(res) {
+        return login(username, password);
+      })
+      .then(function(res) {
+        localStorage.setItem('token', res.data.token);
+      })
+      .then(function(data) {
+        $formSignUp.trigger('reset');
+        $formSignUp.slideUp(1000);
+        setWelcomeText(username);
+      });
   });
 
   function appendArticle(title, url, author, username, storyId) {
@@ -136,22 +151,22 @@ $(function() {
           password
         }
       }
-    })
-      .then(function(res) {
-        return login(username, password);
-      })
-      .then(function(res) {
-        localStorage.setItem('token', res.data.token);
-        // debugger;
-        return getUserInfo(username);
-      })
-      .then(function(res) {
-        return getUserList();
-      })
-      .then(function(res) {
-        // debugger;
-        console.log(res);
-      });
+    });
+    // .then(function(res) {
+    //   return login(username, password);
+    // })
+    // .then(function(res) {
+    //   localStorage.setItem('token', res.data.token);
+    //   // debugger;
+    //   // return getUserInfo(username);
+    // });
+    // .then(function(res) {
+    //   return getUserList();
+    // });
+    // .then(function(res) {
+    //   // debugger;
+    //   console.log(res);
+    // });
   }
 });
 
@@ -172,7 +187,11 @@ function login(username, password) {
 
 /*Set Welcome Text*/
 function setWelcomeText(username) {
-  $('#welcome-text').text(`Welcome ${username}`);
+  if (username === undefined) $('#welcome-text').addClass('dont-display');
+  else {
+    $('#welcome-text').removeClass('dont-display');
+    $('#welcome-text').text(`Welcome ${username}`);
+  }
 }
 
 /*Get Individual User Document*/
