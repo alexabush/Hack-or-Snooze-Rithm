@@ -87,16 +87,17 @@ $(function() {
   }
 
   $('ol').on('click', '.fa-star', function(event) {
-    var storyId;
-    $(event.target).toggleClass('far fa-star fas fa-star');
-    $(event.target)
+    var storyId = $(event.target)
       .closest('li')
-      .toggleClass('favorite');
-
-    /*NEED TO GET STORY ID
-      TO DO THIS, I NEED TO APPEND THE STORY ID THE THE STORY IN THE DOM WHEN A NEW STORY IS CREATED
-      */
-    addFavoriteStory(getUsername(), storyId);
+      .find('#storyId')
+      .text()
+      .trim();
+    addFavoriteStory(getUsername(), storyId).then(function(res) {
+      $(event.target).toggleClass('far fa-star fas fa-star');
+      $(event.target)
+        .closest('li')
+        .toggleClass('favorite');
+    });
   });
 
   /* AJAX BUSINESSS */
@@ -225,6 +226,7 @@ function getUsername() {
 }
 
 function addFavoriteStory(username, storyId) {
+  debugger;
   let token = localStorage.getItem('token');
   return $.ajax({
     method: 'POST',
