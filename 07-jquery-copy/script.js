@@ -15,6 +15,11 @@ $(function() {
 
   $('#nav__logout').on('click', function() {
     logOutUser();
+    setWelcomeText();
+    $('#nav__signin').removeClass('dont-display');
+    $('#nav__signup').removeClass('dont-display');
+    $('#nav__logout').addClass('dont-display');
+    $('#nav__profile').addClass('dont-display');
   });
 
   $('#fav-nav').on('click', function() {
@@ -38,67 +43,165 @@ $(function() {
     addStory(getUsername(), titleVal, author, url).then(function(res) {
       $formSub.trigger('reset');
       $formSub.slideUp(1000);
+      loadAllStories();
     });
   });
 
   var $formSignin = $('#form__signin');
   $($formSignin).on('submit', function() {
     event.preventDefault();
-    var $username = $('#username').val();
-    var $password = $('#password').val();
-    login($username, $password).then(function(data) {
+    var username = $('#username').val();
+    var password = $('#password').val();
+    login(username, password).then(function(res) {
+      localStorage.setItem('token', res.data.token);
       $formSignin.trigger('reset');
       $formSignin.slideUp(1000);
+      setWelcomeText(username);
+      $('#nav__signin').addClass('dont-display');
+      $('#nav__signup').addClass('dont-display');
+      $('#nav__logout').removeClass('dont-display');
+      $('#nav__profile').removeClass('dont-display');
     });
   });
 
   var $formSignUp = $('#form__signup');
   $($formSignUp).on('submit', function() {
     event.preventDefault();
-    var $name = $('#name__signup').val();
-    var $username = $('#username__signup').val();
-    var $password = $('#password__signup').val();
-    signUpUser($name, $username, $password).then(function(data) {
-      $formSignUp.trigger('reset');
-      $formSignUp.slideUp(1000);
+    var name = $('#name__signup').val();
+    var username = $('#username__signup').val();
+    var password = $('#password__signup').val();
+    // debugger;
+    signUpUser(name, username, password)
+      .then(function(res) {
+        return login(username, password);
+      })
+      .then(function(res) {
+        localStorage.setItem('token', res.data.token);
+        $formSignUp.trigger('reset');
+        //slide up isn't working, not sure why not
+        $formSignUp.slideUp(1000);
+        setWelcomeText(username);
+        $('#nav__signin').addClass('dont-display');
+        $('#nav__signup').addClass('dont-display');
+        $('#nav__logout').removeClass('dont-display');
+        $('#nav__profile').removeClass('dont-display');
+      });
+  });
+
+  $('#nav__profile').on('click', function() {
+    event.preventDefault();
+    var $profileMain = $('#profile__main');
+    var $profileMainDiv = $('#profile__main div');
+    $('#article__list').addClass('dont-display');
+    $profileMain.removeClass('dont-display');
+    getUserInfo(getUsername()).then(function(res) {
+      // debugger;
+      var favorites = res.data.favorites;
+      var stories = res.data.stories;
+      var $name = $('<p>').text(`Name: ${res.data.name}`);
+      var $username = $('<p>').text(`Username: ${res.data.username}`);
+      $('#profile__main div').empty();
+      $profileMainDiv.append($name, $username);
+      for (let i = 0; i < favorites.length; i++) {
+        let title = favorites[i].title;
+        let url = favorites[i].url;
+        let author = favorites[i].author;
+        let username = favorites[i].username;
+        let storyId = favorites[i].storyId;
+        appendArticle($profileMainDiv, title, url, author, username, storyId);
+      }
+      for (let i = 0; i < stories.length; i++) {
+        let title = stories[i].title;
+        let url = stories[i].url;
+        let author = stories[i].author;
+        let username = stories[i].username;
+        let storyId = stories[i].storyId;
+        appendArticle($profileMainDiv, title, url, author, username, storyId);
+      }
     });
   });
 
-  function appendArticle(title, url) {
+  function appendArticle(
+    appendLocation,
+    title,
+    url,
+    author,
+    username,
+    storyId
+  ) {
     var $newArticle = $('<li>', {
       html: `
-      <span><i class="far fa-star fa-sm" style="color:lightgrey"></i>
+      <span>
+        <i class="far fa-star fa-sm" style="color:lightgrey"></i>
       </span>
-      ${title} <span><a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
+      ${title} 
+      <span>
+        <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
+      </span>
+      <p>
+        Posted By: ${username}
+        |
+        Author: ${author}
+      </p>
+      <span id='storyId' class='dont-display'>
+        ${storyId}
+      </span>
     `
     });
-    $('ol').append($newArticle);
+    appendLocation.append($newArticle);
   }
 
   $('ol').on('click', '.fa-star', function(event) {
-    var storyId;
-    $(event.target).toggleClass('far fa-star fas fa-star');
-    $(event.target)
+    var storyId = $(event.target)
       .closest('li')
-      .toggleClass('favorite');
+      .find('#storyId')
+      .text()
+      .trim();
+    addFavoriteStory(getUsername(), storyId).then(function(res) {
+      $(event.target).toggleClass('far fa-star fas fa-star');
+      $(event.target)
+        .closest('li')
+        .toggleClass('favorite');
+    });
+  });
 
-    /*NEED TO GET STORY ID
-      TO DO THIS, I NEED TO APPEND THE STORY ID THE THE STORY IN THE DOM WHEN A NEW STORY IS CREATED
-      */
-    addFavoriteStory(getUsername());
+  $('#profile__main').on('click', '.fa-star', function(event) {
+    var storyId = $(event.target)
+      .closest('li')
+      .find('#storyId')
+      .text()
+      .trim();
+    addFavoriteStory(getUsername(), storyId).then(function(res) {
+      $(event.target).toggleClass('far fa-star fas fa-star');
+      $(event.target)
+        .closest('li')
+        .toggleClass('favorite');
+    });
   });
 
   /* AJAX BUSINESSS */
   /*##################################*/
-  (function mainExecution() {
+  (function main() {
+    loadAllStories();
+  })();
+
+  function loadAllStories() {
     getStories().then(function(stories) {
       const data = stories.data;
-      data.slice(34).forEach(function(story) {
-        appendArticle(story.title, story.url);
+      $('ol').empty();
+      data.forEach(function(story) {
+        appendArticle(
+          $('ol'),
+          story.title,
+          story.url,
+          story.author,
+          story.username,
+          story.storyId
+        );
         //can be updated to get more info
       });
     });
-  })();
+  }
 
   /*POPULATE STORIES FOR NON LOGGED IN USER*/
   function getStories() {
@@ -118,22 +221,7 @@ $(function() {
           password
         }
       }
-    })
-      .then(function(res) {
-        return login(username, password);
-      })
-      .then(function(res) {
-        localStorage.setItem('token', res.data.token);
-        // debugger;
-        return getUserInfo(username);
-      })
-      .then(function(res) {
-        return getUserList();
-      })
-      .then(function(res) {
-        // debugger;
-        console.log(res);
-      });
+    });
   }
 });
 
@@ -154,7 +242,11 @@ function login(username, password) {
 
 /*Set Welcome Text*/
 function setWelcomeText(username) {
-  $('#welcome-text').text(`Welcome ${username}`);
+  if (username === undefined) $('#welcome-text').addClass('dont-display');
+  else {
+    $('#welcome-text').removeClass('dont-display');
+    $('#welcome-text').text(`Welcome ${username}`);
+  }
 }
 
 /*Get Individual User Document*/
@@ -208,6 +300,7 @@ function getUsername() {
 }
 
 function addFavoriteStory(username, storyId) {
+  // debugger;
   let token = localStorage.getItem('token');
   return $.ajax({
     method: 'POST',
