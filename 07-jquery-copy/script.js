@@ -18,6 +18,16 @@ $(function() {
     setWelcomeText();
     $('#nav__signin').removeClass('dont-display');
     $('#nav__signup').removeClass('dont-display');
+    $('#nav__logout').addClass('dont-display');
+    $('#nav__profile').addClass('dont-display');
+  });
+
+  $('#nav__profile').on('click', function() {
+    event.preventDefault();
+    var $profileMain = $('profile__main');
+    $('article__list').addClass('dont-display');
+    $profileMain.removeClass('dont-dispay');
+    $profileMain.append('apple');
   });
 
   $('#fav-nav').on('click', function() {
@@ -57,6 +67,7 @@ $(function() {
       $('#nav__signin').addClass('dont-display');
       $('#nav__signup').addClass('dont-display');
       $('#nav__logout').removeClass('dont-display');
+      $('#nav__profile').removeClass('dont-display');
     });
   });
 
@@ -80,6 +91,7 @@ $(function() {
         $('#nav__signin').addClass('dont-display');
         $('#nav__signup').addClass('dont-display');
         $('#nav__logout').removeClass('dont-display');
+        $('#nav__profile').removeClass('dont-display');
       });
   });
 
