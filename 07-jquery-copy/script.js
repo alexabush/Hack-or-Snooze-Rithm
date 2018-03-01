@@ -157,12 +157,25 @@ $(function() {
       .find('#storyId')
       .text()
       .trim();
-    addFavoriteStory(getUsername(), storyId).then(function(res) {
-      $(event.target).toggleClass('far fa-star fas fa-star');
+    if (
       $(event.target)
         .closest('li')
-        .toggleClass('favorite');
-    });
+        .hasClass('favorite')
+    ) {
+      removeFavoriteStory(getUsername(), storyId).then(function(res) {
+        $(event.target).toggleClass('far fa-star fas fa-star');
+        $(event.target)
+          .closest('li')
+          .toggleClass('favorite');
+      });
+    } else {
+      addFavoriteStory(getUsername(), storyId).then(function(res) {
+        $(event.target).toggleClass('far fa-star fas fa-star');
+        $(event.target)
+          .closest('li')
+          .toggleClass('favorite');
+      });
+    }
   });
 
   $('#profile__main').on('click', '.fa-star', function(event) {
@@ -171,12 +184,25 @@ $(function() {
       .find('#storyId')
       .text()
       .trim();
-    addFavoriteStory(getUsername(), storyId).then(function(res) {
-      $(event.target).toggleClass('far fa-star fas fa-star');
+    if (
       $(event.target)
         .closest('li')
-        .toggleClass('favorite');
-    });
+        .hasClass('favorite')
+    ) {
+      removeFavoriteStory(getUsername(), storyId).then(function(res) {
+        $(event.target).toggleClass('far fa-star fas fa-star');
+        $(event.target)
+          .closest('li')
+          .toggleClass('favorite');
+      });
+    } else {
+      addFavoriteStory(getUsername(), storyId).then(function(res) {
+        $(event.target).toggleClass('far fa-star fas fa-star');
+        $(event.target)
+          .closest('li')
+          .toggleClass('favorite');
+      });
+    }
   });
 
   /* AJAX BUSINESSS */
@@ -310,6 +336,18 @@ function addFavoriteStory(username, storyId) {
     }
   });
 }
+
+function removeFavoriteStory(username, storyId) {
+  let token = localStorage.getItem('token');
+  return $.ajax({
+    method: 'DELETE',
+    url: `https://hack-or-snooze.herokuapp.com/users/${username}/favorites/${storyId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
+
 // function getUser(username) {
 //   let token = localStorage.getItem('token');
 //   return $.ajax({
