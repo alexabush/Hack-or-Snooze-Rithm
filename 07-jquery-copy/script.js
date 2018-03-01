@@ -106,6 +106,7 @@ $(function() {
         var author = stories[i].author;
         var username = stories[i].username;
         var storyId = stories[i].storyId;
+        $('#profile__main div').empty();
         appendArticle($profileMainDiv, title, url, author, username, storyId);
       }
     });
@@ -130,7 +131,7 @@ $(function() {
       </span>
       <p>
         Posted By: ${username}
-        <!-- Author: ${author} -->
+        Author: ${author}
       </p>
       <span id='storyId' class='dont-display'>
         ${storyId}
@@ -154,12 +155,27 @@ $(function() {
     });
   });
 
+  // $('#profile__main').on('click', '.fa-star', function(event) {
+  //   var storyId = $(event.target)
+  //     .closest('li')
+  //     .find('#storyId')
+  //     .text()
+  //     .trim();
+  //   addFavoriteStory(getUsername(), storyId).then(function(res) {
+  //     $(event.target).toggleClass('far fa-star fas fa-star');
+  //     $(event.target)
+  //       .closest('li')
+  //       .toggleClass('favorite');
+  //   });
+  // });
+
   /* AJAX BUSINESSS */
   /*##################################*/
   (function mainExecution() {
     getStories().then(function(stories) {
       const data = stories.data;
-      data.slice(34).forEach(function(story) {
+      $('ol').empty();
+      data.forEach(function(story) {
         appendArticle(
           $('ol'),
           story.title,
@@ -192,21 +208,6 @@ $(function() {
         }
       }
     });
-    // .then(function(res) {
-    //   return login(username, password);
-    // })
-    // .then(function(res) {
-    //   localStorage.setItem('token', res.data.token);
-    //   // debugger;
-    //   // return getUserInfo(username);
-    // });
-    // .then(function(res) {
-    //   return getUserList();
-    // });
-    // .then(function(res) {
-    //   // debugger;
-    //   console.log(res);
-    // });
   }
 });
 
