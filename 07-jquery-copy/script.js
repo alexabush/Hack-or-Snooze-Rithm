@@ -43,6 +43,7 @@ $(function() {
     addStory(getUsername(), titleVal, author, url).then(function(res) {
       $formSub.trigger('reset');
       $formSub.slideUp(1000);
+      loadAllStories();
     });
   });
 
@@ -69,7 +70,7 @@ $(function() {
     var name = $('#name__signup').val();
     var username = $('#username__signup').val();
     var password = $('#password__signup').val();
-    debugger;
+    // debugger;
     signUpUser(name, username, password)
       .then(function(res) {
         return login(username, password);
@@ -89,24 +90,32 @@ $(function() {
 
   $('#nav__profile').on('click', function() {
     event.preventDefault();
-    console.log('works');
     var $profileMain = $('#profile__main');
     var $profileMainDiv = $('#profile__main div');
     $('#article__list').addClass('dont-display');
     $profileMain.removeClass('dont-display');
     getUserInfo(getUsername()).then(function(res) {
-      debugger;
+      // debugger;
+      var favorites = res.data.favorites;
       var stories = res.data.stories;
-      var $name = $('<p>').text(res.data.name);
-      var $username = $('<p>').text(res.data.username);
+      var $name = $('<p>').text(`Name: ${res.data.name}`);
+      var $username = $('<p>').text(`Username: ${res.data.username}`);
+      $('#profile__main div').empty();
       $profileMainDiv.append($name, $username);
+      for (let i = 0; i < favorites.length; i++) {
+        let title = favorites[i].title;
+        let url = favorites[i].url;
+        let author = favorites[i].author;
+        let username = favorites[i].username;
+        let storyId = favorites[i].storyId;
+        appendArticle($profileMainDiv, title, url, author, username, storyId);
+      }
       for (let i = 0; i < stories.length; i++) {
-        var title = stories[i].title;
-        var url = stories[i].url;
-        var author = stories[i].author;
-        var username = stories[i].username;
-        var storyId = stories[i].storyId;
-        $('#profile__main div').empty();
+        let title = stories[i].title;
+        let url = stories[i].url;
+        let author = stories[i].author;
+        let username = stories[i].username;
+        let storyId = stories[i].storyId;
         appendArticle($profileMainDiv, title, url, author, username, storyId);
       }
     });
@@ -131,6 +140,7 @@ $(function() {
       </span>
       <p>
         Posted By: ${username}
+        |
         Author: ${author}
       </p>
       <span id='storyId' class='dont-display'>
@@ -155,23 +165,27 @@ $(function() {
     });
   });
 
-  // $('#profile__main').on('click', '.fa-star', function(event) {
-  //   var storyId = $(event.target)
-  //     .closest('li')
-  //     .find('#storyId')
-  //     .text()
-  //     .trim();
-  //   addFavoriteStory(getUsername(), storyId).then(function(res) {
-  //     $(event.target).toggleClass('far fa-star fas fa-star');
-  //     $(event.target)
-  //       .closest('li')
-  //       .toggleClass('favorite');
-  //   });
-  // });
+  $('#profile__main').on('click', '.fa-star', function(event) {
+    var storyId = $(event.target)
+      .closest('li')
+      .find('#storyId')
+      .text()
+      .trim();
+    addFavoriteStory(getUsername(), storyId).then(function(res) {
+      $(event.target).toggleClass('far fa-star fas fa-star');
+      $(event.target)
+        .closest('li')
+        .toggleClass('favorite');
+    });
+  });
 
   /* AJAX BUSINESSS */
   /*##################################*/
-  (function mainExecution() {
+  (function main() {
+    loadAllStories();
+  })();
+
+  function loadAllStories() {
     getStories().then(function(stories) {
       const data = stories.data;
       $('ol').empty();
@@ -187,7 +201,7 @@ $(function() {
         //can be updated to get more info
       });
     });
-  })();
+  }
 
   /*POPULATE STORIES FOR NON LOGGED IN USER*/
   function getStories() {
@@ -286,7 +300,7 @@ function getUsername() {
 }
 
 function addFavoriteStory(username, storyId) {
-  debugger;
+  // debugger;
   let token = localStorage.getItem('token');
   return $.ajax({
     method: 'POST',
