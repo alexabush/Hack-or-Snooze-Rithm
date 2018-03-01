@@ -22,14 +22,6 @@ $(function() {
     $('#nav__profile').addClass('dont-display');
   });
 
-  $('#nav__profile').on('click', function() {
-    event.preventDefault();
-    var $profileMain = $('profile__main');
-    $('article__list').addClass('dont-display');
-    $profileMain.removeClass('dont-dispay');
-    $profileMain.append('apple');
-  });
-
   $('#fav-nav').on('click', function() {
     event.preventDefault();
     var $favNavTitle = $(this);
@@ -95,7 +87,38 @@ $(function() {
       });
   });
 
-  function appendArticle(title, url, author, username, storyId) {
+  $('#nav__profile').on('click', function() {
+    event.preventDefault();
+    console.log('works');
+    var $profileMain = $('#profile__main');
+    var $profileMainDiv = $('#profile__main div');
+    $('#article__list').addClass('dont-display');
+    $profileMain.removeClass('dont-display');
+    getUserInfo(getUsername()).then(function(res) {
+      debugger;
+      var stories = res.data.stories;
+      var $name = $('<p>').text(res.data.name);
+      var $username = $('<p>').text(res.data.username);
+      $profileMainDiv.append($name, $username);
+      for (let i = 0; i < stories.length; i++) {
+        var title = stories[i].title;
+        var url = stories[i].url;
+        var author = stories[i].author;
+        var username = stories[i].username;
+        var storyId = stories[i].storyId;
+        appendArticle($profileMainDiv, title, url, author, username, storyId);
+      }
+    });
+  });
+
+  function appendArticle(
+    appendLocation,
+    title,
+    url,
+    author,
+    username,
+    storyId
+  ) {
     var $newArticle = $('<li>', {
       html: `
       <span>
@@ -114,7 +137,7 @@ $(function() {
       </span>
     `
     });
-    $('ol').append($newArticle);
+    appendLocation.append($newArticle);
   }
 
   $('ol').on('click', '.fa-star', function(event) {
@@ -138,6 +161,7 @@ $(function() {
       const data = stories.data;
       data.slice(34).forEach(function(story) {
         appendArticle(
+          $('ol'),
           story.title,
           story.url,
           story.author,
