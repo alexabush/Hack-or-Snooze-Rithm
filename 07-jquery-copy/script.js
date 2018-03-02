@@ -120,7 +120,15 @@ $(function() {
         let author = favorites[i].author;
         let username = favorites[i].username;
         let storyId = favorites[i].storyId;
-        appendArticle($profileMainDiv, title, url, author, username, storyId);
+        appendArticle(
+          $profileMainDiv,
+          title,
+          url,
+          author,
+          username,
+          storyId,
+          true
+        );
       }
       for (let i = 0; i < stories.length; i++) {
         let title = stories[i].title;
@@ -154,8 +162,14 @@ $(function() {
       .attr('id', 'storyId')
       .addClass('dont-display')
       .text(storyId);
+
     $newArticle.append($span1, title, $span2, $p, $span3);
+    if (addDeleteButton === true) {
+      var $deleteBtn = $('<button>').text('X');
+      $newArticle.append($deleteBtn);
+    }
     appendLocation.append($newArticle);
+
     // var $newArticle = $('<li>', {
     //   html: `
     //   <span>
