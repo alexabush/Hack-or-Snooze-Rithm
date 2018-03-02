@@ -9,7 +9,8 @@ body {
   font-weight: bold;
 }
 
-div > a.nav-item.nav-link.active.menu-link:hover {
+div > a.nav-item.nav-link.active.menu-link:hover,
+#nav__hack-or-snooze {
   cursor: pointer;
 }
 
