@@ -136,7 +136,15 @@ $(function() {
         let author = stories[i].author;
         let username = stories[i].username;
         let storyId = stories[i].storyId;
-        appendArticle($profileMainDiv, title, url, author, username, storyId);
+        appendArticle(
+          $profileMainDiv,
+          title,
+          url,
+          author,
+          username,
+          storyId,
+          true
+        );
       }
     });
   });
@@ -150,7 +158,8 @@ $(function() {
     storyId,
     addDeleteButton
   ) {
-    var $newArticle = $('<li>');
+    var $newArticle = $('<li>').addClass('profile__main--story');
+    var $container = $('<div>');
     var $span1 = $('<span>').html(
       '<i class="far fa-star fa-sm" style="color:lightgrey"></i>'
     );
@@ -163,9 +172,13 @@ $(function() {
       .addClass('dont-display')
       .text(storyId);
 
-    $newArticle.append($span1, title, $span2, $p, $span3);
+    $container.append($span1, title, $span2, $p, $span3);
+    $newArticle.append($container);
     if (addDeleteButton === true) {
-      var $deleteBtn = $('<button>').text('X');
+      var $deleteBtn = $('<button>')
+        .text('X')
+        .addClass('btn btn-secondary btn-xs')
+        .css('height', '40px');
       $newArticle.append($deleteBtn);
     }
     appendLocation.append($newArticle);
@@ -217,6 +230,10 @@ $(function() {
           .toggleClass('favorite');
       });
     }
+  });
+
+  $('#profile__main').on('click', 'button', function() {
+    console.log('button clicked');
   });
 
   $('#profile__main').on('click', '.fa-star', function(event) {
@@ -328,6 +345,18 @@ $(function() {
         Authorization: `Bearer ${token}`
       }
     });
+  }
+
+  function deleteStory(storyId) {
+      let token = localStorage.getItem('token');
+      return $.ajax({
+        method: 'DELETE',
+        url: `https://hack-or-snooze.herokuapp.com/users/${username}/favorites/${storyId}`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
   }
 
   /*ADD STORY TO LOGGED IN USER*/
