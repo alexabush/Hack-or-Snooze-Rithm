@@ -139,28 +139,43 @@ $(function() {
     url,
     author,
     username,
-    storyId
+    storyId,
+    addDeleteButton
   ) {
-    var $newArticle = $('<li>', {
-      html: `
-      <span>
-        <i class="far fa-star fa-sm" style="color:lightgrey"></i>
-      </span>
-      ${title} 
-      <span>
-        <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
-      </span>
-      <p>
-        Posted By: ${username}
-        |
-        Author: ${author}
-      </p>
-      <span id='storyId' class='dont-display'>
-        ${storyId}
-      </span>
-    `
-    });
+    var $newArticle = $('<li>');
+    var $span1 = $('<span>').html(
+      '<i class="far fa-star fa-sm" style="color:lightgrey"></i>'
+    );
+    var $span2 = $('<span>').html(
+      `<a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>`
+    );
+    var $p = $('<p>').text(`Posted By: ${username} | Author: ${author}`);
+    var $span3 = $('<span>')
+      .attr('id', 'storyId')
+      .addClass('dont-display')
+      .text(storyId);
+    $newArticle.append($span1, title, $span2, $p, $span3);
     appendLocation.append($newArticle);
+    // var $newArticle = $('<li>', {
+    //   html: `
+    //   <span>
+    //     <i class="far fa-star fa-sm" style="color:lightgrey"></i>
+    //   </span>
+    //   ${title}
+    //   <span>
+    //     <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
+    //   </span>
+    //   <p>
+    //     Posted By: ${username}
+    //     |
+    //     Author: ${author}
+    //   </p>
+    //   <span id='storyId' class='dont-display'>
+    //     ${storyId}
+    //   </span>
+    // `
+    // });
+    // appendLocation.append($newArticle);
   }
 
   $('ol').on('click', '.fa-star', function(event) {
