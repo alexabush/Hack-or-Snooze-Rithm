@@ -42,3 +42,8 @@ nav.hackSnoozeNav {
 .dont-display {
   display: none;
 }
+
+.profile__main--story {
+  display: flex;
+  justify-content: space-between;
+}

@@ -120,7 +120,15 @@ $(function() {
         let author = favorites[i].author;
         let username = favorites[i].username;
         let storyId = favorites[i].storyId;
-        appendArticle($profileMainDiv, title, url, author, username, storyId);
+        appendArticle(
+          $profileMainDiv,
+          title,
+          url,
+          author,
+          username,
+          storyId,
+          true
+        );
       }
       for (let i = 0; i < stories.length; i++) {
         let title = stories[i].title;
@@ -128,7 +136,15 @@ $(function() {
         let author = stories[i].author;
         let username = stories[i].username;
         let storyId = stories[i].storyId;
-        appendArticle($profileMainDiv, title, url, author, username, storyId);
+        appendArticle(
+          $profileMainDiv,
+          title,
+          url,
+          author,
+          username,
+          storyId,
+          true
+        );
       }
     });
   });
@@ -139,28 +155,54 @@ $(function() {
     url,
     author,
     username,
-    storyId
+    storyId,
+    addDeleteButton
   ) {
-    var $newArticle = $('<li>', {
-      html: `
-      <span>
-        <i class="far fa-star fa-sm" style="color:lightgrey"></i>
-      </span>
-      ${title} 
-      <span>
-        <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
-      </span>
-      <p>
-        Posted By: ${username}
-        |
-        Author: ${author}
-      </p>
-      <span id='storyId' class='dont-display'>
-        ${storyId}
-      </span>
-    `
-    });
+    var $newArticle = $('<li>').addClass('profile__main--story');
+    var $container = $('<div>');
+    var $span1 = $('<span>').html(
+      '<i class="far fa-star fa-sm" style="color:lightgrey"></i>'
+    );
+    var $span2 = $('<span>').html(
+      `<a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>`
+    );
+    var $p = $('<p>').text(`Posted By: ${username} | Author: ${author}`);
+    var $span3 = $('<span>')
+      .attr('id', 'storyId')
+      .addClass('dont-display')
+      .text(storyId);
+
+    $container.append($span1, title, $span2, $p, $span3);
+    $newArticle.append($container);
+    if (addDeleteButton === true) {
+      var $deleteBtn = $('<button>')
+        .text('X')
+        .addClass('btn btn-secondary btn-xs')
+        .css('height', '40px');
+      $newArticle.append($deleteBtn);
+    }
     appendLocation.append($newArticle);
+
+    // var $newArticle = $('<li>', {
+    //   html: `
+    //   <span>
+    //     <i class="far fa-star fa-sm" style="color:lightgrey"></i>
+    //   </span>
+    //   ${title}
+    //   <span>
+    //     <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
+    //   </span>
+    //   <p>
+    //     Posted By: ${username}
+    //     |
+    //     Author: ${author}
+    //   </p>
+    //   <span id='storyId' class='dont-display'>
+    //     ${storyId}
+    //   </span>
+    // `
+    // });
+    // appendLocation.append($newArticle);
   }
 
   $('ol').on('click', '.fa-star', function(event) {
@@ -188,6 +230,10 @@ $(function() {
           .toggleClass('favorite');
       });
     }
+  });
+
+  $('#profile__main').on('click', 'button', function() {
+    console.log('button clicked');
   });
 
   $('#profile__main').on('click', '.fa-star', function(event) {
@@ -299,6 +345,18 @@ $(function() {
         Authorization: `Bearer ${token}`
       }
     });
+  }
+
+  function deleteStory(storyId) {
+      let token = localStorage.getItem('token');
+      return $.ajax({
+        method: 'DELETE',
+        url: `https://hack-or-snooze.herokuapp.com/users/${username}/favorites/${storyId}`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
   }
 
   /*ADD STORY TO LOGGED IN USER*/
