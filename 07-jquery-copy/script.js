@@ -1,118 +1,118 @@
-$("form").hide();
+$('form').hide();
 $(function() {
   //NAVIGATION SECTION JS
 
   //returns to home page when hack or snooze text clicked
-  $("#nav__hack-or-snooze").on("click", function() {
-    var $profileMain = $("#profile__main");
-    var $profileMainDiv = $("#profile__main div");
-    $profileMain.addClass("dont-display");
-    $("#article__list").removeClass("dont-display");
+  $('#nav__hack-or-snooze').on('click', function() {
+    var $profileMain = $('#profile__main');
+    var $profileMainDiv = $('#profile__main div');
+    $profileMain.addClass('dont-display');
+    $('#article__list').removeClass('dont-display');
     loadAllStories();
   });
 
-  $("#submit-nav").on("click", function() {
-    if (localStorage.getItem("token") === null) return;
-    $("#form__submit").slideToggle(1000);
+  $('#submit-nav').on('click', function() {
+    if (localStorage.getItem('token') === null) return;
+    $('#form__submit').slideToggle(1000);
   });
 
-  $("#nav__signin").on("click", function() {
-    $("#form__signin").slideToggle(1000);
+  $('#nav__signin').on('click', function() {
+    $('#form__signin').slideToggle(1000);
   });
 
-  $("#nav__logout").on("click", function() {
+  $('#nav__logout').on('click', function() {
     logOutUser();
     setWelcomeText();
-    $("#nav__signin").removeClass("dont-display");
-    $("#nav__signup").removeClass("dont-display");
-    $("#nav__logout").addClass("dont-display");
-    $("#nav__profile").addClass("dont-display");
+    $('#nav__signin').removeClass('dont-display');
+    $('#nav__signup').removeClass('dont-display');
+    $('#nav__logout').addClass('dont-display');
+    $('#nav__profile').addClass('dont-display');
   });
 
   //Favoriting NAV  AND DISPLAYING ONLY FAVORITES WHEN ONE CLICKS "FAVORITE"
 
-  $("#fav-nav").on("click", function() {
+  $('#fav-nav').on('click', function() {
     event.preventDefault();
     var $favNavTitle = $(this);
-    if ($favNavTitle.text() == $favNavTitle.data("text-swap")) {
-      $favNavTitle.text($favNavTitle.data("text-original"));
+    if ($favNavTitle.text() == $favNavTitle.data('text-swap')) {
+      $favNavTitle.text($favNavTitle.data('text-original'));
     } else {
-      $favNavTitle.data("text-original", $favNavTitle.text());
-      $favNavTitle.text($favNavTitle.data("text-swap"));
+      $favNavTitle.data('text-original', $favNavTitle.text());
+      $favNavTitle.text($favNavTitle.data('text-swap'));
     }
-    $("li:not(.favorite)").toggleClass("dont-display");
+    $('li:not(.favorite)').toggleClass('dont-display');
   });
 
   //SUBMIT FORM JS
-  var $formSub = $("#form__submit");
-  $($formSub).on("submit", function() {
+  var $formSub = $('#form__submit');
+  $($formSub).on('submit', function() {
     event.preventDefault();
-    var titleVal = $("#title").val();
-    var url = $("#url").val();
-    var author = $("#author").val();
+    var titleVal = $('#title').val();
+    var url = $('#url').val();
+    var author = $('#author').val();
     addStory(getUsername(), titleVal, author, url).then(function(res) {
-      $formSub.trigger("reset");
+      $formSub.trigger('reset');
       $formSub.slideToggle(1000);
       loadAllStories();
     });
   });
 
   //SIGN IN FORM JS
-  var $formSignin = $("#form__signin");
-  $($formSignin).on("submit", function() {
+  var $formSignin = $('#form__signin');
+  $($formSignin).on('submit', function() {
     event.preventDefault();
-    var username = $("#username").val();
-    var password = $("#password").val();
+    var username = $('#username').val();
+    var password = $('#password').val();
     login(username, password).then(function(res) {
-      localStorage.setItem("token", res.data.token);
-      $formSignin.trigger("reset");
+      localStorage.setItem('token', res.data.token);
+      $formSignin.trigger('reset');
       $formSignin.slideToggle(1000);
       setWelcomeText(username);
-      $("#nav__signin").addClass("dont-display");
-      $("#nav__signup").addClass("dont-display");
-      $("#nav__logout").removeClass("dont-display");
-      $("#nav__profile").removeClass("dont-display");
+      $('#nav__signin').addClass('dont-display');
+      $('#nav__signup').addClass('dont-display');
+      $('#nav__logout').removeClass('dont-display');
+      $('#nav__profile').removeClass('dont-display');
     });
   });
 
   //SIGN UP FORM JS
 
-  var $formSignUp = $("#form__signup");
-  $($formSignUp).on("submit", function() {
+  var $formSignUp = $('#form__signup');
+  $($formSignUp).on('submit', function() {
     event.preventDefault();
-    var name = $("#name__signup").val();
-    var username = $("#username__signup").val();
-    var password = $("#password__signup").val();
+    var name = $('#name__signup').val();
+    var username = $('#username__signup').val();
+    var password = $('#password__signup').val();
     // debugger;
     signUpUser(name, username, password)
       .then(function(res) {
         return login(username, password);
       })
       .then(function(res) {
-        localStorage.setItem("token", res.data.token);
-        $formSignUp.trigger("reset");
+        localStorage.setItem('token', res.data.token);
+        $formSignUp.trigger('reset');
         //slide up isn't working, not sure why not
         $formSignUp.slideToggle(1000);
         setWelcomeText(username);
-        $("#nav__signin").addClass("dont-display");
-        $("#nav__signup").addClass("dont-display");
-        $("#nav__logout").removeClass("dont-display");
-        $("#nav__profile").removeClass("dont-display");
+        $('#nav__signin').addClass('dont-display');
+        $('#nav__signup').addClass('dont-display');
+        $('#nav__logout').removeClass('dont-display');
+        $('#nav__profile').removeClass('dont-display');
       });
   });
 
-  $("#nav__profile").on("click", function() {
+  $('#nav__profile').on('click', function() {
     event.preventDefault();
-    var $profileMain = $("#profile__main");
-    var $profileMainDiv = $("#profile__main div");
-    $("#article__list").addClass("dont-display");
-    $profileMain.removeClass("dont-display");
+    var $profileMain = $('#profile__main');
+    var $profileMainDiv = $('#profile__main div');
+    $('#article__list').addClass('dont-display');
+    $profileMain.removeClass('dont-display');
     getUserInfo(getUsername()).then(function(res) {
       var favorites = res.data.favorites;
       var stories = res.data.stories;
-      var $name = $("<p>").text(`Name: ${res.data.name}`);
-      var $username = $("<p>").text(`Username: ${res.data.username}`);
-      $("#profile__main div").empty();
+      var $name = $('<p>').text(`Name: ${res.data.name}`);
+      var $username = $('<p>').text(`Username: ${res.data.username}`);
+      $('#profile__main div').empty();
       $profileMainDiv.append($name, $username);
       for (let i = 0; i < favorites.length; i++) {
         let title = favorites[i].title;
@@ -120,7 +120,15 @@ $(function() {
         let author = favorites[i].author;
         let username = favorites[i].username;
         let storyId = favorites[i].storyId;
-        appendArticle($profileMainDiv, title, url, author, username, storyId);
+        appendArticle(
+          $profileMainDiv,
+          title,
+          url,
+          author,
+          username,
+          storyId,
+          true
+        );
       }
       for (let i = 0; i < stories.length; i++) {
         let title = stories[i].title;
@@ -128,7 +136,15 @@ $(function() {
         let author = stories[i].author;
         let username = stories[i].username;
         let storyId = stories[i].storyId;
-        appendArticle($profileMainDiv, title, url, author, username, storyId);
+        appendArticle(
+          $profileMainDiv,
+          title,
+          url,
+          author,
+          username,
+          storyId,
+          true
+        );
       }
     });
   });
@@ -139,80 +155,110 @@ $(function() {
     url,
     author,
     username,
-    storyId
+    storyId,
+    addDeleteButton
   ) {
-    var $newArticle = $("<li>", {
-      html: `
-      <span>
-        <i class="far fa-star fa-sm" style="color:lightgrey"></i>
-      </span>
-      ${title} 
-      <span>
-        <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
-      </span>
-      <p>
-        Posted By: ${username}
-        |
-        Author: ${author}
-      </p>
-      <span id='storyId' class='dont-display'>
-        ${storyId}
-      </span>
-    `
-    });
+    var $newArticle = $('<li>').addClass('profile__main--story');
+    var $container = $('<div>');
+    var $span1 = $('<span>').html(
+      '<i class="far fa-star fa-sm" style="color:lightgrey"></i>'
+    );
+    var $span2 = $('<span>').html(
+      `<a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>`
+    );
+    var $p = $('<p>').text(`Posted By: ${username} | Author: ${author}`);
+    var $span3 = $('<span>')
+      .attr('id', 'storyId')
+      .addClass('dont-display')
+      .text(storyId);
+
+    $container.append($span1, title, $span2, $p, $span3);
+    $newArticle.append($container);
+    if (addDeleteButton === true) {
+      var $deleteBtn = $('<button>')
+        .text('X')
+        .addClass('btn btn-secondary btn-xs')
+        .css('height', '40px');
+      $newArticle.append($deleteBtn);
+    }
     appendLocation.append($newArticle);
+
+    // var $newArticle = $('<li>', {
+    //   html: `
+    //   <span>
+    //     <i class="far fa-star fa-sm" style="color:lightgrey"></i>
+    //   </span>
+    //   ${title}
+    //   <span>
+    //     <a href="${url}" target="_blank" class="text-muted">&nbsp;(${url})</a>
+    //   </span>
+    //   <p>
+    //     Posted By: ${username}
+    //     |
+    //     Author: ${author}
+    //   </p>
+    //   <span id='storyId' class='dont-display'>
+    //     ${storyId}
+    //   </span>
+    // `
+    // });
+    // appendLocation.append($newArticle);
   }
 
-  $("ol").on("click", ".fa-star", function(event) {
+  $('ol').on('click', '.fa-star', function(event) {
     var storyId = $(event.target)
-      .closest("li")
-      .find("#storyId")
+      .closest('li')
+      .find('#storyId')
       .text()
       .trim();
     if (
       $(event.target)
-        .closest("li")
-        .hasClass("favorite")
+        .closest('li')
+        .hasClass('favorite')
     ) {
       removeFavoriteStory(getUsername(), storyId).then(function(res) {
-        $(event.target).toggleClass("far fa-star fas fa-star");
+        $(event.target).toggleClass('far fa-star fas fa-star');
         $(event.target)
-          .closest("li")
-          .toggleClass("favorite");
+          .closest('li')
+          .toggleClass('favorite');
       });
     } else {
       addFavoriteStory(getUsername(), storyId).then(function(res) {
-        $(event.target).toggleClass("far fa-star fas fa-star");
+        $(event.target).toggleClass('far fa-star fas fa-star');
         $(event.target)
-          .closest("li")
-          .toggleClass("favorite");
+          .closest('li')
+          .toggleClass('favorite');
       });
     }
   });
 
-  $("#profile__main").on("click", ".fa-star", function(event) {
+  $('#profile__main').on('click', 'button', function() {
+    console.log('button clicked');
+  });
+
+  $('#profile__main').on('click', '.fa-star', function(event) {
     var storyId = $(event.target)
-      .closest("li")
-      .find("#storyId")
+      .closest('li')
+      .find('#storyId')
       .text()
       .trim();
     if (
       $(event.target)
-        .closest("li")
-        .hasClass("favorite")
+        .closest('li')
+        .hasClass('favorite')
     ) {
       removeFavoriteStory(getUsername(), storyId).then(function(res) {
-        $(event.target).toggleClass("far fa-star fas fa-star");
+        $(event.target).toggleClass('far fa-star fas fa-star');
         $(event.target)
-          .closest("li")
-          .toggleClass("favorite");
+          .closest('li')
+          .toggleClass('favorite');
       });
     } else {
       addFavoriteStory(getUsername(), storyId).then(function(res) {
-        $(event.target).toggleClass("far fa-star fas fa-star");
+        $(event.target).toggleClass('far fa-star fas fa-star');
         $(event.target)
-          .closest("li")
-          .toggleClass("favorite");
+          .closest('li')
+          .toggleClass('favorite');
       });
     }
   });
@@ -226,7 +272,7 @@ $(function() {
   function loadAllStories() {
     getStories().then(function(stories) {
       const data = stories.data;
-      const $ol = $("ol");
+      const $ol = $('ol');
       $ol.empty();
       data.forEach(function(story) {
         appendArticle(
@@ -244,15 +290,15 @@ $(function() {
 
   /*POPULATE STORIES FOR NON LOGGED IN USER*/
   function getStories() {
-    return $.getJSON("https://hack-or-snooze.herokuapp.com/stories");
+    return $.getJSON('https://hack-or-snooze.herokuapp.com/stories');
   }
 
   /*CREATE NEW USER ACCOUNT*/
   function signUpUser(name, username, password) {
     // debugger;
     return $.ajax({
-      method: "POST",
-      url: "https://hack-or-snooze.herokuapp.com/users",
+      method: 'POST',
+      url: 'https://hack-or-snooze.herokuapp.com/users',
       data: {
         data: {
           name,
@@ -268,8 +314,8 @@ $(function() {
   function login(username, password) {
     // debugger;
     return $.ajax({
-      method: "POST",
-      url: "https://hack-or-snooze.herokuapp.com/auth",
+      method: 'POST',
+      url: 'https://hack-or-snooze.herokuapp.com/auth',
       data: {
         data: {
           username,
@@ -281,19 +327,19 @@ $(function() {
 
   /*Set Welcome Text*/
   function setWelcomeText(username) {
-    if (username === undefined) $("#welcome-text").addClass("dont-display");
+    if (username === undefined) $('#welcome-text').addClass('dont-display');
     else {
-      $("#welcome-text").removeClass("dont-display");
-      $("#welcome-text").text(`Welcome ${username}`);
+      $('#welcome-text').removeClass('dont-display');
+      $('#welcome-text').text(`Welcome ${username}`);
     }
   }
 
   /*Get Individual User Document*/
   function getUserInfo(username) {
     // debugger;
-    var token = localStorage.getItem("token");
+    var token = localStorage.getItem('token');
     return $.ajax({
-      method: "GET",
+      method: 'GET',
       url: `https://hack-or-snooze.herokuapp.com/users/${username}`,
       headers: {
         Authorization: `Bearer ${token}`
@@ -301,13 +347,25 @@ $(function() {
     });
   }
 
+  function deleteStory(storyId) {
+      let token = localStorage.getItem('token');
+      return $.ajax({
+        method: 'DELETE',
+        url: `https://hack-or-snooze.herokuapp.com/users/${username}/favorites/${storyId}`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
+  }
+
   /*ADD STORY TO LOGGED IN USER*/
   function addStory(username, title, author, url) {
     // debugger;
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem('token');
     return $.ajax({
-      method: "POST",
-      url: "https://hack-or-snooze.herokuapp.com/stories",
+      method: 'POST',
+      url: 'https://hack-or-snooze.herokuapp.com/stories',
       headers: {
         Authorization: `Bearer ${token}`
       },
@@ -324,9 +382,9 @@ $(function() {
 
   function getUserList() {
     // debugger;
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem('token');
     return $.ajax({
-      url: "https://hack-or-snooze.herokuapp.com/users",
+      url: 'https://hack-or-snooze.herokuapp.com/users',
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -334,15 +392,15 @@ $(function() {
   }
 
   function getUsername() {
-    var token = localStorage.getItem("token");
-    return JSON.parse(atob(token.split(".")[1])).username;
+    var token = localStorage.getItem('token');
+    return JSON.parse(atob(token.split('.')[1])).username;
   }
 
   function addFavoriteStory(username, storyId) {
     // debugger;
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem('token');
     return $.ajax({
-      method: "POST",
+      method: 'POST',
       url: `https://hack-or-snooze.herokuapp.com/users/${username}/favorites/${storyId}`,
       headers: {
         Authorization: `Bearer ${token}`
@@ -351,9 +409,9 @@ $(function() {
   }
 
   function removeFavoriteStory(username, storyId) {
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem('token');
     return $.ajax({
-      method: "DELETE",
+      method: 'DELETE',
       url: `https://hack-or-snooze.herokuapp.com/users/${username}/favorites/${storyId}`,
       headers: {
         Authorization: `Bearer ${token}`
@@ -396,42 +454,40 @@ $(function() {
 LOG OUT
 */
 
-  var $form_wrapper = $("#form_wrapper"),
+  var $form_wrapper = $('#form_wrapper'),
     //the current form is the one with class "active"
-    $currentForm = $form_wrapper.children("form.active"),
+    $currentForm = $form_wrapper.children('form.active'),
     //the switch form links
-    $linkform = $form_wrapper.find(".linkform");
+    $linkform = $form_wrapper.find('.linkform');
 
-  $form_wrapper.children("form").each(function(i) {
+  $form_wrapper.children('form').each(function(i) {
     var $theForm = $(this);
     //solve the inline display none problem when using fadeIn/fadeOut
-    if (!$theForm.hasClass("active")) $theForm.hide();
-    $theForm.data({
-      width: $theForm.width(),
-      height: $theForm.height()
-    });
+    if (!$theForm.hasClass('active')) $theForm.hide();
+    // $theForm.data({
+    //   width	: $theForm.width(),
+    //   height	: $theForm.height()
+    // });
   });
 
-  setWrapperWidth();
-
-  $linkform.bind("click", function(e) {
+  $linkform.bind('click', function(e) {
     var $link = $(this);
-    var target = $link.attr("rel");
+    var target = $link.attr('rel');
     $currentForm.fadeOut(400, function() {
       //remove class "active" from current form
-      $currentForm.removeClass("active");
+      $currentForm.removeClass('active');
       //new current form
-      $currentForm = $form_wrapper.children("form." + target);
+      $currentForm = $form_wrapper.children('form.' + target);
       //animate the wrapper
       $form_wrapper.stop().animate(
-        {
-          width: $currentForm.data("width") + "px",
-          height: $currentForm.data("height") + "px"
-        },
-        500,
+        //   {
+        //     width: $currentForm.data("width") + "px",
+        //     height: $currentForm.data("height") + "px"
+        //   },
+        //   500,
         function() {
           //new form gets class "active"
-          $currentForm.addClass("active");
+          $currentForm.addClass('active');
           //show the new form
           $currentForm.fadeIn(400);
         }
@@ -443,5 +499,6 @@ LOG OUT
 
 function logOutUser() {
   localStorage.clear();
-  $("form").hide();
+  $('form').hide();
 }
+
