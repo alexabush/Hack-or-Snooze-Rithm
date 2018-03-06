@@ -1,7 +1,5 @@
 $('form').hide();
 $(function() {
-  //NAVIGATION SECTION JS
-
   //returns to home page when hack or snooze text clicked
   $('#nav__hack-or-snooze').on('click', function() {
     var $profileMain = $('#profile__main');
@@ -226,28 +224,21 @@ $(function() {
   });
 
   $('#profile__main').on('click', '.fa-star', function(event) {
+    var $target = $(event.target);
     var storyId = $(event.target)
       .closest('li')
       .find('#storyId')
       .text()
       .trim();
-    if (
-      $(event.target)
-        .closest('li')
-        .hasClass('favorite')
-    ) {
+    if ($target.closest('li').hasClass('favorite')) {
       removeFavoriteStory(getUsername(), storyId).then(function(res) {
-        $(event.target).toggleClass('far fa-star fas fa-star');
-        $(event.target)
-          .closest('li')
-          .toggleClass('favorite');
+        $target.toggleClass('far fa-star fas fa-star');
+        $target.closest('li').toggleClass('favorite');
       });
     } else {
       addFavoriteStory(getUsername(), storyId).then(function(res) {
-        $(event.target).toggleClass('far fa-star fas fa-star');
-        $(event.target)
-          .closest('li')
-          .toggleClass('favorite');
+        $target.toggleClass('far fa-star fas fa-star');
+        $target.closest('li').toggleClass('favorite');
       });
     }
   });
@@ -410,8 +401,6 @@ $(function() {
   /* 
 LOG OUT
 */
-  // });
-
   function logOutUser() {
     localStorage.clear();
     $('form').hide();
