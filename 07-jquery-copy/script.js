@@ -89,40 +89,42 @@ $(function() {
 
   //SIGN UP FORM JS
 
-  async function signUpUserWrittenByElie() {
-    var name = $('#name__signup').val();
-    var username = $('#username__signup').val();
-    var password = $('#password__signup').val();
-    try {
-      let res = await signUpUser(name, username, password);
-      let nextRes = await login(username, password);
-      localStorage.setItem('token', res.data.token);
-    } catch (e) {
-      alert('you messed up!');
-    }
-    return username;
-  }
+  // async function signUpUserWrittenByElie() {
+  //   var name = $('#name__signup').val();
+  //   var username = $('#username__signup').val();
+  //   var password = $('#password__signup').val();
+  //   try {
+  //     let res = await signUpUser(name, username, password);
+  //     let nextRes = await login(username, password);
+  //     localStorage.setItem('token', res.data.token);
+  //   } catch (e) {
+  //     alert('you messed up!');
+  //   }
+  //   return username;
+  // }
 
   var $formSignUp = $('#form__signup');
   $($formSignUp).on('submit', function() {
     event.preventDefault();
-
+    var name = $('#name__signup').val();
+    var username = $('#username__signup').val();
+    var password = $('#password__signup').val();
     // debugger;
-    // signUpUser(name, username, password)
-    //   .then(function(res) {
-    //     return login(username, password);
-    //   })
-    //   .then(function(res) {
-    signUpUserWrittenByElie().then(function(username) {
-      $formSignUp.trigger('reset');
-      //slide up isn't working, not sure why not
-      $formSignUp.slideToggle(1000);
-      setWelcomeText(username);
-      $('#nav__signin').addClass('dont-display');
-      $('#nav__signup').addClass('dont-display');
-      $('#nav__logout').removeClass('dont-display');
-      $('#nav__profile').removeClass('dont-display');
-    });
+    signUpUser(name, username, password)
+      .then(function(res) {
+        return login(username, password);
+      })
+      .then(function(res) {
+        // signUpUserWrittenByElie().then(function(username) {
+        $formSignUp.trigger('reset');
+        //slide up isn't working, not sure why not
+        $formSignUp.slideToggle(1000);
+        setWelcomeText(username);
+        $('#nav__signin').addClass('dont-display');
+        $('#nav__signup').addClass('dont-display');
+        $('#nav__logout').removeClass('dont-display');
+        $('#nav__profile').removeClass('dont-display');
+      });
   });
   // });
 
@@ -134,19 +136,12 @@ $(function() {
     $profileMain.removeClass('dont-display');
     getUserInfo(getUsername()).then(function(res) {
       let { favorites, stories } = res.data;
-      // var favorites = res.data.favorites;
-      // var stories = res.data.stories;
       var name = $('<p>').text(`Name: ${res.data.name}`);
       var username = $('<p>').text(`Username: ${res.data.username}`);
       $('#profile__main div').empty();
       $profileMainDiv.append(name, username);
       for (let i = 0; i < favorites.length; i++) {
         let { title, url, author, username, storyId } = favorites[i];
-        // let title = favorites[i].title;
-        // let url = favorites[i].url;
-        // let author = favorites[i].author;
-        // let username = favorites[i].username;
-        // let storyId = favorites[i].storyId;
         appendArticle(
           $profileMainDiv,
           title,
@@ -158,12 +153,7 @@ $(function() {
         );
       }
       for (let i = 0; i < stories.length; i++) {
-        // destructure!
-        let title = stories[i].title;
-        let url = stories[i].url;
-        let author = stories[i].author;
-        let username = stories[i].username;
-        let storyId = stories[i].storyId;
+        let { title, url, author, username, storyId } = stories[i];
         appendArticle(
           $profileMainDiv,
           title,
@@ -203,11 +193,13 @@ $(function() {
     $container.append($span1, title, $span2, $p, $span3);
     $newArticle.append($container);
     if (addDeleteButton === true) {
-      // use {} syntax after creating an element
-      var $deleteBtn = $('<button>')
-        .text('X')
-        .addClass('btn btn-secondary btn-xs')
-        .css('height', '40px');
+      var $deleteBtn = $('<button>', {
+        text: 'X',
+        class: 'btn btn-secondary btn-xs',
+        css: {
+          height: 40
+        }
+      });
       $newArticle.append($deleteBtn);
     }
     appendLocation.append($newArticle);
@@ -232,10 +224,6 @@ $(function() {
       });
     }
   });
-
-  // $("#profile__main").on("click", "button", function() {
-  //   console.log("button clicked");
-  // });
 
   $('#profile__main').on('click', '.fa-star', function(event) {
     var storyId = $(event.target)
